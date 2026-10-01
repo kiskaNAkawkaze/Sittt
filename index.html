@@ -1,0 +1,2706 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Экзотические Экскурсии</title>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background: #02060a;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* =====================================================
+   ФОН
+   ===================================================== */
+
+#background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.background-glow {
+    position: fixed;
+    inset: -25%;
+    z-index: 1;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 18% 18%,
+            rgba(30, 170, 190, .16),
+            transparent 34%
+        ),
+        radial-gradient(
+            ellipse at 83% 22%,
+            rgba(70, 105, 210, .13),
+            transparent 32%
+        ),
+        radial-gradient(
+            ellipse at 70% 85%,
+            rgba(0, 150, 180, .10),
+            transparent 35%
+        );
+
+    filter: blur(35px);
+
+    animation: ambientMove 16s ease-in-out infinite alternate;
+}
+
+@keyframes ambientMove {
+    0% {
+        transform: translate3d(-2%, -1%, 0) scale(1);
+    }
+
+    50% {
+        transform: translate3d(2%, 2%, 0) scale(1.04);
+    }
+
+    100% {
+        transform: translate3d(-1%, 3%, 0) scale(1.02);
+    }
+}
+
+.background-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 15%,
+            rgba(0, 0, 0, .12) 55%,
+            rgba(0, 0, 0, .72) 100%
+        );
+}
+
+/* =====================================================
+   ГОРОДСКОЙ СИЛУЭТ
+   ===================================================== */
+
+.city {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 22vh;
+
+    z-index: 1;
+    pointer-events: none;
+
+    opacity: .32;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(1, 7, 11, .98),
+            rgba(2, 9, 14, .7) 65%,
+            transparent
+        );
+}
+
+.city::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(30, 80, 95, .18) 20%,
+            transparent 38%,
+            rgba(30, 90, 110, .12) 62%,
+            transparent 82%
+        );
+}
+
+/* =====================================================
+   ОСНОВНОЙ САЙТ
+   ===================================================== */
+
+.site {
+    position: relative;
+    z-index: 5;
+
+    width: 100%;
+    height: 100vh;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding:
+        max(22px, env(safe-area-inset-top))
+        16px
+        max(25px, env(safe-area-inset-bottom));
+
+    scrollbar-width: none;
+}
+
+.site::-webkit-scrollbar {
+    display: none;
+}
+
+.content {
+    width: 100%;
+    max-width: 620px;
+    min-height: 100%;
+
+    margin: 0 auto;
+}
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+header {
+    text-align: center;
+    padding: 18px 0 27px;
+
+    animation:
+        headerIn .9s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes headerIn {
+    from {
+        opacity: 0;
+        transform: translateY(-25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: clamp(27px, 7vw, 40px);
+    font-weight: 800;
+    letter-spacing: 1px;
+
+    color: #f8fdff;
+
+    text-shadow:
+        0 0 18px rgba(90, 225, 245, .16),
+        0 3px 20px rgba(0,0,0,.45);
+}
+
+.subtitle {
+    margin-top: 7px;
+
+    color: rgba(180, 235, 245, .65);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+/* =====================================================
+   МЕНЮ
+   ===================================================== */
+
+.tour-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.tour-menu.hidden {
+    display: none;
+}
+
+.menu-btn {
+    position: relative;
+
+    width: 100%;
+    min-height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 17px;
+
+    color: #fff;
+
+    border: 1px solid rgba(180, 230, 240, .12);
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(17, 34, 42, .66),
+            rgba(5, 13, 18, .54)
+        );
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.055);
+
+    cursor: pointer;
+    text-align: left;
+
+    font-size: 14px;
+    font-weight: 650;
+
+    overflow: hidden;
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        background .3s ease,
+        box-shadow .3s ease;
+}
+
+.menu-btn::before {
+    content: "";
+
+    position: absolute;
+
+    top: -80px;
+    left: -80px;
+
+    width: 170px;
+    height: 170px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(70,220,240,.16),
+            transparent 65%
+        );
+
+    opacity: .35;
+
+    transition: .4s;
+}
+
+.menu-btn:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(90, 220, 240, .35);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(22, 52, 61, .72),
+            rgba(6, 17, 22, .62)
+        );
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.34),
+        0 0 25px rgba(50,205,225,.08);
+}
+
+.menu-btn:hover::before {
+    opacity: 1;
+}
+
+.menu-btn:active {
+    transform: scale(.985);
+}
+
+.menu-btn span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-btn span:first-child i {
+    width: 21px;
+
+    color: #65dceb;
+
+    text-align: center;
+
+    filter:
+        drop-shadow(
+            0 0 7px rgba(70,220,240,.35)
+        );
+}
+
+.menu-btn > i {
+    color: #68dceb;
+
+    transition: transform .3s ease;
+}
+
+.menu-btn:hover > i {
+    transform: translateX(4px);
+}
+
+/* =====================================================
+   SALE
+   ===================================================== */
+
+.badge-sale {
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff3c78,
+            #ff6b95,
+            #ff3c78
+        );
+
+    background-size: 200% 100%;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    box-shadow:
+        0 0 18px rgba(255,50,115,.3);
+
+    animation:
+        salePulse 2s ease-in-out infinite,
+        saleGradient 3s linear infinite;
+}
+
+@keyframes salePulse {
+    50% {
+        transform: scale(1.05);
+        box-shadow:
+            0 0 25px rgba(255,50,115,.5);
+    }
+}
+
+@keyframes saleGradient {
+    to {
+        background-position: 200% 0;
+    }
+}
+
+/* =====================================================
+   СТРАНИЦЫ ЭКСКУРСИЙ
+   ===================================================== */
+
+.tour-page {
+    display: none;
+    padding-bottom: 30px;
+}
+
+.tour-page.active {
+    display: block;
+
+    animation:
+        pageIn .45s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-back {
+    border: 0;
+    background: none;
+
+    color: rgba(220,245,250,.6);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 17px;
+
+    transition: .25s;
+}
+
+.btn-back:hover {
+    color: #69dfef;
+    transform: translateX(-3px);
+}
+
+.tour-title {
+    position: relative;
+
+    margin-bottom: 16px;
+    padding-left: 13px;
+
+    color: #fff;
+
+    font-size: 23px;
+    font-weight: 800;
+
+    text-shadow:
+        0 3px 20px rgba(0,0,0,.45);
+}
+
+.tour-title::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 3px;
+    bottom: 3px;
+
+    width: 3px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            #6be8f7,
+            #3aaebe
+        );
+
+    box-shadow:
+        0 0 15px rgba(80,220,240,.5);
+}
+
+/* =====================================================
+   ГАЛЕРЕЯ
+   ===================================================== */
+
+.gallery {
+    display: flex;
+    gap: 10px;
+
+    overflow-x: auto;
+
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+
+    scroll-snap-type: x mandatory;
+
+    scrollbar-width: none;
+}
+
+.gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery img {
+    width: 160px;
+    height: 108px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 13px;
+
+    border:
+        1px solid rgba(210,245,250,.13);
+
+    background: #111;
+
+    cursor: zoom-in;
+
+    scroll-snap-align: start;
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
+}
+
+.gallery img:hover {
+    transform: scale(1.025);
+
+    border-color: #64dcea;
+
+    box-shadow:
+        0 0 22px rgba(65,215,235,.16);
+}
+
+/* =====================================================
+   ОПИСАНИЕ
+   ===================================================== */
+
+.tour-desc-wrap {
+    margin-bottom: 17px;
+}
+
+.tour-desc {
+    color: rgba(230,246,250,.68);
+
+    font-size: 13px;
+    line-height: 1.65;
+
+    max-height: 110px;
+
+    overflow: hidden;
+
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+
+    transition: max-height .45s ease;
+}
+
+.tour-desc.expanded {
+    max-height: 420px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.desc-toggle {
+    margin-top: 7px;
+
+    padding: 0;
+
+    border: 0;
+    background: none;
+
+    color: #64ddec;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.desc-toggle:hover {
+    text-shadow:
+        0 0 8px rgba(80,225,245,.65);
+}
+
+.tour-desc::-webkit-scrollbar {
+    width: 4px;
+}
+
+.tour-desc::-webkit-scrollbar-thumb {
+    background: rgba(80,220,240,.3);
+    border-radius: 4px;
+}
+
+/* =====================================================
+   КНОПКИ ДЕЙСТВИЙ
+   ===================================================== */
+
+.action-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-action {
+    position: relative;
+
+    width: 100%;
+    min-height: 51px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 13px;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    border-radius: 14px;
+
+    border: 1px solid #5bd9e9;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(50,190,210,.16),
+            rgba(35,105,120,.08)
+        );
+
+    box-shadow:
+        0 0 20px rgba(60,210,230,.07),
+        inset 0 1px 0 rgba(255,255,255,.06);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition: .3s;
+}
+
+.btn-action::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -110%;
+
+    width: 65%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.13),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    transition: left .7s;
+}
+
+.btn-action:hover::after {
+    left: 145%;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 27px rgba(65,215,235,.17);
+}
+
+.btn-action:active {
+    transform: scale(.985);
+}
+
+.btn-price {
+    width: 100%;
+
+    padding: 11px;
+
+    border-radius: 12px;
+
+    color: rgba(230,245,250,.62);
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(220,245,250,.1);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.btn-price:hover {
+    color: #fff;
+
+    background:
+        rgba(255,255,255,.07);
+
+    border-color:
+        rgba(220,245,250,.2);
+}
+
+.max-aquapark {
+    border-color: #ff4380;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,0,127,.17),
+            rgba(255,0,85,.08)
+        );
+}
+
+.max-aquapark:hover {
+    box-shadow:
+        0 0 25px rgba(255,0,127,.28);
+}
+
+/* =====================================================
+   ЦЕНЫ
+   ===================================================== */
+
+.price-spoiler {
+    display: none;
+
+    margin-top: 1px;
+
+    padding: 14px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(0,0,0,.3);
+
+    border:
+        1px dashed rgba(80,220,240,.22);
+
+    color: rgba(230,245,250,.68);
+
+    font-size: 13px;
+
+    animation:
+        pageIn .3s ease;
+}
+
+.price-info {
+    text-align: center;
+
+    color: #fff;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+}
+
+.price-date {
+    padding: 11px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+}
+
+.price-date:last-child {
+    border-bottom: none;
+}
+
+.price-date-title {
+    color: #fff;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+.price-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 6px;
+}
+
+.price-row:last-child {
+    margin-bottom: 0;
+}
+
+.price-row strong {
+    color: #fff;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   MODAL
+   ===================================================== */
+
+.modal-overlay {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    background:
+        rgba(0,0,0,.7);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    position: relative;
+
+    width: 100%;
+    max-width: 360px;
+
+    padding: 25px 20px;
+
+    border-radius: 21px;
+
+    border:
+        1px solid rgba(90,220,240,.35);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12,29,35,.97),
+            rgba(3,9,13,.97)
+        );
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.7),
+        0 0 35px rgba(60,215,235,.08);
+
+    animation:
+        modalIn .3s ease;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(.9) translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-close {
+    position: absolute;
+
+    top: 9px;
+    right: 15px;
+
+    color: rgba(255,255,255,.5);
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.modal-close:hover {
+    color: #ff4380;
+}
+
+.modal-title {
+    text-align: center;
+
+    color: #fff;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    margin-bottom: 18px;
+}
+
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 13px;
+
+    border-radius: 11px;
+
+    color: #fff;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 650;
+
+    transition: .25s;
+}
+
+.contact-btn:hover {
+    transform: translateY(-2px);
+}
+
+.c-tg {
+    background: #229ED9;
+}
+
+.c-vk {
+    background: #0077FF;
+}
+
+.c-max {
+    background:
+        linear-gradient(
+            45deg,
+            #ff0055,
+            #ff007f
+        );
+}
+
+/* =====================================================
+   ФОТО
+   ===================================================== */
+
+.photo-viewer {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 2000;
+
+    padding: 20px;
+
+    background:
+        rgba(0,0,0,.94);
+
+    backdrop-filter: blur(12px);
+
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-viewer.active {
+    display: flex;
+}
+
+.photo-viewer img {
+    display: block;
+
+    max-width: 95vw;
+    max-height: 88vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 0 35px rgba(60,215,235,.14),
+        0 25px 80px rgba(0,0,0,.8);
+
+    animation:
+        photoZoom .25s ease;
+}
+
+@keyframes photoZoom {
+    from {
+        opacity: 0;
+        transform: scale(.75);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.photo-close {
+    position: fixed;
+
+    top: 17px;
+    right: 17px;
+
+    z-index: 2001;
+
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.2);
+
+    background:
+        rgba(15,20,23,.85);
+
+    color: #fff;
+
+    font-size: 28px;
+
+    cursor: pointer;
+}
+
+/* =====================================================
+   МОБИЛЬНЫЙ
+   ===================================================== */
+
+@media (max-width: 500px) {
+
+    .site {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+
+    header {
+        padding-top: 12px;
+        padding-bottom: 24px;
+    }
+
+    .menu-btn {
+        min-height: 61px;
+        padding: 13px 15px;
+    }
+
+    .gallery img {
+        width: 155px;
+        height: 105px;
+    }
+
+    .tour-title {
+        font-size: 22px;
+    }
+
+    .city {
+        height: 17vh;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     ФОН
+     ===================================================== -->
+
+<canvas id="background"></canvas>
+
+<div class="background-glow"></div>
+<div class="background-vignette"></div>
+<div class="city"></div>
+
+
+<!-- =====================================================
+     САЙТ
+     ===================================================== -->
+
+<main class="site" id="site">
+
+<div class="content">
+
+<header id="card-header">
+
+<h1>НАЙДИ СВОЙ ПУТЬ</h1>
+
+<div class="subtitle">
+Выбор экскурсии
+</div>
+
+</header>
+
+
+<!-- =====================================================
+     МЕНЮ
+     ===================================================== -->
+
+<div id="main-menu" class="tour-menu">
+
+<button class="menu-btn"
+        onclick="showTour('tour-birds')">
+
+<span>
+<i class="fas fa-feather-alt"></i>
+Лучники с высоты птичьего полёта
+</span>
+
+<i class="fas fa-chevron-right"></i>
+
+</button>
+
+
+<button class="menu-btn"
+        onclick="showTour('tour-konyukhov')">
+
+<span>
+<i class="fas fa-compass"></i>
+Экскурсия к Фёдору Конюхову
+</span>
+
+<i class="fas fa-chevron-right"></i>
+
+</button>
+
+
+<button class="menu-btn"
+        onclick="showTour('tour-moscow-city')">
+
+<span>
+<i class="fas fa-building"></i>
+Москва-Сити
+</span>
+
+<i class="fas fa-chevron-right"></i>
+
+</button>
+
+
+<button class="menu-btn"
+        onclick="showTour('tour-aquapark')">
+
+<span>
+<i class="fas fa-water"></i>
+Ква Ква парк
+</span>
+
+<span class="badge-sale">
+Скидка
+</span>
+
+</button>
+
+
+<button class="menu-btn"
+        onclick="showTour('tour-dreamisland')">
+
+<span>
+<i class="fas fa-ticket-alt"></i>
+Остров мечты
+</span>
+
+<i class="fas fa-chevron-right"></i>
+
+</button>
+
+</div>
+
+
+<!-- =====================================================
+     ЛУЧНИКИ
+     ===================================================== -->
+
+<div id="tour-birds" class="tour-page">
+
+<button class="btn-back"
+        onclick="showMenu()">
+
+<i class="fas fa-arrow-left"></i>
+Назад в меню
+
+</button>
+
+<div class="tour-title">
+Лучники с высоты
+</div>
+
+<div class="gallery">
+
+<img src="https://via.placeholder.com/140x95/00f2fe/fff?text=Photo+1"
+     alt="Фото 1">
+
+<img src="https://via.placeholder.com/140x95/4facfe/fff?text=Photo+2"
+     alt="Фото 2">
+
+</div>
+
+<div class="tour-desc">
+
+Уникальный полет над живописными локациями с элементами исторического погружения. Испытайте незабываемые ощущения свободы.
+
+</div>
+
+<div class="action-container">
+
+<button class="btn-action"
+        onclick="openModal()">
+
+<i class="fas fa-ticket-alt"></i>
+Забронировать экскурсию
+
+</button>
+
+<button class="btn-price"
+        onclick="toggleSpoiler('price-birds')">
+
+Цены на билеты
+
+</button>
+
+<div id="price-birds"
+     class="price-spoiler">
+
+<div class="price-row">
+<span>Взрослый билет:</span>
+<strong>4 500 ₽</strong>
+</div>
+
+<div class="price-row">
+<span>Детский:</span>
+<strong>3 000 ₽</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     КОНЮХОВ
+     ===================================================== -->
+
+<div id="tour-konyukhov" class="tour-page">
+
+<button class="btn-back"
+        onclick="showMenu()">
+
+<i class="fas fa-arrow-left"></i>
+Назад в меню
+
+</button>
+
+<div class="tour-title">
+К Фёдору Конюхову
+</div>
+
+<div class="gallery">
+
+<img src="Пак фото/Конюхов/IMG_20261001_010734_188.jpg"
+     alt="Фото экскурсии">
+
+<img src="Пак фото/Конюхов/IMG_20261001_010734_491.jpg"
+     alt="Фото экскурсии">
+
+<img src="Пак фото/Конюхов/IMG_20261001_010734_501.jpg"
+     alt="Фото экскурсии">
+
+<img src="Пак фото/Конюхов/IMG_20261001_010734_749.jpg"
+     alt="Фото экскурсии">
+
+<img src="Пак фото/Конюхов/IMG_20261001_010735_035.jpg"
+     alt="Фото экскурсии">
+
+</div>
+
+<div class="tour-desc">
+
+Эксклюзивный визит в гости к легендарному российскому путешественнику. Из первых уст вы узнаете о кругосветных экспедициях, увидите оригинальные лодки, снаряжение и его картины.
+
+</div>
+
+<div class="action-container">
+
+<button class="btn-action"
+        onclick="openModal()">
+
+<i class="fas fa-user-friends"></i>
+Записаться в группу
+
+</button>
+
+<button class="btn-price"
+        onclick="toggleSpoiler('price-konyukhov')">
+
+Цены на билеты
+
+</button>
+
+<div id="price-konyukhov"
+     class="price-spoiler">
+
+<div class="price-row">
+<span>Экскурсия в музей:</span>
+<strong>2 500 ₽</strong>
+</div>
+
+<div class="price-row">
+<span>Сувенирный пак:</span>
+<strong>Включено</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     МОСКВА-СИТИ
+     ===================================================== -->
+
+<div id="tour-moscow-city" class="tour-page">
+
+<button class="btn-back"
+        onclick="showMenu()">
+
+<i class="fas fa-arrow-left"></i>
+Назад в меню
+
+</button>
+
+<div class="tour-title">
+Москва-Сити
+</div>
+
+<div class="gallery">
+
+<img src="Пак фото/Москва сити/IMG_20261001_013427_106.jpg"
+     alt="Москва-Сити">
+
+<img src="Пак фото/Москва сити/IMG_20261001_013427_204.jpg"
+     alt="Москва-Сити">
+
+<img src="Пак фото/Москва сити/IMG_20261001_013427_305.jpg"
+     alt="Москва-Сити">
+
+<img src="Пак фото/Москва сити/IMG_20261001_013427_547.jpg"
+     alt="Москва-Сити">
+
+</div>
+
+<div class="tour-desc-wrap">
+
+<div id="desc-moscow"
+     class="tour-desc">
+
+💥💥💥 Москва-Сити
+Квиз-Квест
+
+🗓️ Будни в 19:00
+🗓️ Выходные в 13:30
+
+💸 1 000 ₽ за человека.
+
+В программе квиз-квеста:
+
+* Сколько смотровых площадок на территории.
+* Сколько лифтов в каждой башне — вертикальных и горизонтальных.
+* Сколько домов в комплексе.
+* Дом Wildberries.
+* Башня «Меркурий»: чем она уникальна.
+* Как попасть на смотровую площадку «Выше только любовь» в 2 раза дешевле.
+* Что случилось с мостом Багратион.
+* Башня 2000.
+* Лучшие локации для индивидуальной фотосессии.
+* Башня «Евразия» и интересные истории.
+* Значение аббревиатуры торгового центра.
+* Смотровая площадка «Воронье гнездо».
+
+</div>
+
+<button class="desc-toggle"
+        onclick="toggleDescription('desc-moscow', this)">
+
+Развернуть ↓
+
+</button>
+
+</div>
+
+<div class="action-container">
+
+<button class="btn-action"
+        onclick="openModal()">
+
+<i class="fas fa-building"></i>
+Забронировать экскурсию
+
+</button>
+
+<button class="btn-price"
+        onclick="toggleSpoiler('price-moscow-city')">
+
+Цены на билеты
+
+</button>
+
+<div id="price-moscow-city"
+     class="price-spoiler">
+
+<div class="price-row">
+<span>Экскурсия:</span>
+<strong>Уточняется</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     КВА КВА
+     ===================================================== -->
+
+<div id="tour-aquapark" class="tour-page">
+
+<button class="btn-back"
+        onclick="showMenu()">
+
+<i class="fas fa-arrow-left"></i>
+Назад в меню
+
+</button>
+
+<div class="tour-title">
+Ква Ква Парк
+</div>
+
+<div class="gallery">
+
+<img src="Пак фото/Ква ква парк/IMG_20261001_014045_382.jpg"
+     alt="Ква Ква парк — фото 1">
+
+<img src="Пак фото/Ква ква парк/IMG_20261001_014050_478.jpg"
+     alt="Ква Ква парк — фото 2">
+
+<img src="Пак фото/Ква ква парк/IMG_20261001_014050_488.jpg"
+     alt="Ква Ква парк — фото 3">
+
+<img src="Пак фото/Ква ква парк/IMG_20261001_014050_654.jpg"
+     alt="Ква Ква парк — фото 4">
+
+</div>
+
+<div class="tour-desc-wrap">
+
+<div id="desc-aquapark"
+     class="tour-desc">
+
+Всем привет! 👋
+
+Приглашаю в Ква Ква парк 🐸☀️🐸
+
+🌍 Московская область, г. Мытищи, ул. Коммунистическая, д. 1.
+
+🗓️ 05 сентября (суббота) в 15:00 🌊
+🗓️ 13 сентября (воскресенье) в 14:00 🌊
+🗓️ 19 сентября (суббота) в 15:00 🌊
+🗓️ 27 сентября (воскресенье) в 14:00 🌊
+
+👍👍👍
+
+5 часов водных развлечений 🌊🌊🌊 по сказочным ценам.
+
+Вас ждут:
+
+* горки;
+* бассейны;
+* джакузи;
+* сауны.
+
+На любой возраст и темперамент.
+
+💥💥💥
+
+Стоимость за 1 билет:
+
+* взрослые от 14 лет и старше — 1 750 рублей;
+* дети от 130 см до 14 лет — 1 000 рублей;
+* дети до 130 см — бесплатно.
+
+🙋‍♀️ Организатор — сопровождающая: Марина Владимировна
+
+8-909-669-09-03
+
+🤝 Репост приветствуется.
+
+Для записи:
+
+* Дата и время;
+* Фамилия одного взрослого;
+* Возраст каждого ребенка до 14 лет, укажите, пожалуйста, рост.
+
+</div>
+
+<button class="desc-toggle"
+        onclick="toggleDescription('desc-aquapark', this)">
+
+Развернуть ↓
+
+</button>
+
+</div>
+
+<div class="action-container">
+
+<button class="btn-action"
+        onclick="openModal()"
+        style="
+        border-color:#ff007f;
+        background:
+        linear-gradient(
+            135deg,
+            rgba(255,0,127,.2),
+            rgba(255,0,85,.2)
+        );
+        ">
+
+<i class="fas fa-shopping-cart"></i>
+Приобрести билет
+
+</button>
+
+<a href="https://max.ru/join/_FxM2aru9XJft85Ga4TQ4p-t2wuiFz9wphcofVjH3ck"
+   target="_blank"
+   rel="noopener"
+   class="btn-action max-aquapark">
+
+<i class="fas fa-comment"></i>
+MAX для связи
+
+</a>
+
+<button class="btn-price"
+        onclick="toggleSpoiler('price-aquapark')">
+
+Цены на билеты
+
+</button>
+
+<div id="price-aquapark"
+     class="price-spoiler"
+     style="border-color:rgba(255,0,127,.3)">
+
+<div class="price-info">
+🌊 5 часов водных развлечений 🌊
+</div>
+
+<div class="price-date">
+
+<div class="price-date-title">
+🗓️ 05 сентября — 15:00
+</div>
+
+<div class="price-row">
+<span>👤 Взрослые от 14 лет:</span>
+<strong style="color:#ff007f">
+1 750 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>👶 Дети от 130 см до 14 лет:</span>
+<strong style="color:#ff007f">
+1 000 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>🧒 Дети до 130 см:</span>
+<strong style="color:#72ffbd">
+Бесплатно
+</strong>
+</div>
+
+</div>
+
+<div class="price-date">
+
+<div class="price-date-title">
+🗓️ 13 сентября — 14:00
+</div>
+
+<div class="price-row">
+<span>👤 Взрослые от 14 лет:</span>
+<strong style="color:#ff007f">
+1 750 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>👶 Дети от 130 см до 14 лет:</span>
+<strong style="color:#ff007f">
+1 000 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>🧒 Дети до 130 см:</span>
+<strong style="color:#72ffbd">
+Бесплатно
+</strong>
+</div>
+
+</div>
+
+<div class="price-date">
+
+<div class="price-date-title">
+🗓️ 19 сентября — 15:00
+</div>
+
+<div class="price-row">
+<span>👤 Взрослые от 14 лет:</span>
+<strong style="color:#ff007f">
+1 750 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>👶 Дети от 130 см до 14 лет:</span>
+<strong style="color:#ff007f">
+1 000 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>🧒 Дети до 130 см:</span>
+<strong style="color:#72ffbd">
+Бесплатно
+</strong>
+</div>
+
+</div>
+
+<div class="price-date">
+
+<div class="price-date-title">
+🗓️ 27 сентября — 14:00
+</div>
+
+<div class="price-row">
+<span>👤 Взрослые от 14 лет:</span>
+<strong style="color:#ff007f">
+1 750 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>👶 Дети от 130 см до 14 лет:</span>
+<strong style="color:#ff007f">
+1 000 ₽
+</strong>
+</div>
+
+<div class="price-row">
+<span>🧒 Дети до 130 см:</span>
+<strong style="color:#72ffbd">
+Бесплатно
+</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ОСТРОВ МЕЧТЫ
+     ===================================================== -->
+
+<div id="tour-dreamisland"
+     class="tour-page">
+
+<button class="btn-back"
+        onclick="showMenu()">
+
+<i class="fas fa-arrow-left"></i>
+Назад в меню
+
+</button>
+
+<div class="tour-title">
+Остров Мечты
+</div>
+
+<div class="gallery">
+
+<img src="https://via.placeholder.com/140x95/00f2fe/fff?text=Castle"
+     alt="Замок">
+
+</div>
+
+<div class="tour-desc">
+
+Крупнейший крытый парк развлечений в Европе. Тематические зоны, культовые персонажи сказок и американские горки.
+
+</div>
+
+<div class="action-container">
+
+<button class="btn-action"
+        onclick="openModal()">
+
+<i class="fas fa-ticket-alt"></i>
+Купить Билеты
+
+</button>
+
+<button class="btn-price"
+        onclick="toggleSpoiler('price-dreamisland')">
+
+Цены на билеты
+
+</button>
+
+<div id="price-dreamisland"
+     class="price-spoiler">
+
+<div class="price-row">
+<span>Билет "All Inclusive":</span>
+<strong>2 900 ₽</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</main>
+
+
+<!-- =====================================================
+     МОДАЛЬНОЕ ОКНО
+     ===================================================== -->
+
+<div class="modal-overlay"
+     id="contact-modal">
+
+<div class="modal-content">
+
+<span class="modal-close"
+      onclick="closeModal()">
+
+&times;
+
+</span>
+
+<div class="modal-title">
+Написать организатору в:
+</div>
+
+<div class="contact-links">
+
+<a href="https://t.me/+G_-5Gf3N1_ZjMDYy"
+   target="_blank"
+   rel="noopener"
+   class="contact-btn c-tg">
+
+<i class="fab fa-telegram-plane"></i>
+Телеграм
+
+</a>
+
+<a href="https://vk.ru/oly_steppe"
+   target="_blank"
+   rel="noopener"
+   class="contact-btn c-vk">
+
+<i class="fab fa-vk"></i>
+ВКонтакте
+
+</a>
+
+<a href="https://max.ru/join/_FxM2aru9XJft85Ga4TQ4p-t2wuiFz9wphcofVjH3ck"
+   target="_blank"
+   rel="noopener"
+   class="contact-btn c-max">
+
+<i class="fas fa-comment"></i>
+MAX
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ФОТО
+     ===================================================== -->
+
+<div id="photo-viewer"
+     class="photo-viewer"
+     onclick="closePhoto(event)">
+
+<button class="photo-close"
+        onclick="closePhoto()">
+
+&times;
+
+</button>
+
+<img id="photo-viewer-img"
+     src=""
+     alt="Просмотр фотографии">
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   НАВИГАЦИЯ
+   ===================================================== */
+
+function showTour(id) {
+
+    document
+        .getElementById('main-menu')
+        .classList
+        .add('hidden');
+
+    document
+        .getElementById('card-header')
+        .style.display = 'none';
+
+    document
+        .querySelectorAll('.tour-page')
+        .forEach(function(page) {
+
+            page.classList.remove('active');
+
+        });
+
+    document
+        .getElementById(id)
+        .classList
+        .add('active');
+
+    document
+        .getElementById('site')
+        .scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+}
+
+
+function showMenu() {
+
+    document
+        .querySelectorAll('.tour-page')
+        .forEach(function(page) {
+
+            page.classList.remove('active');
+
+        });
+
+    document
+        .getElementById('main-menu')
+        .classList
+        .remove('hidden');
+
+    document
+        .getElementById('card-header')
+        .style.display = '';
+
+    document
+        .getElementById('site')
+        .scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+}
+
+
+/* =====================================================
+   ЦЕНЫ
+   ===================================================== */
+
+function toggleSpoiler(id) {
+
+    const spoiler =
+        document.getElementById(id);
+
+    if (
+        spoiler.style.display === 'block'
+    ) {
+
+        spoiler.style.display = 'none';
+
+    } else {
+
+        spoiler.style.display = 'block';
+
+    }
+}
+
+
+/* =====================================================
+   ОПИСАНИЕ
+   ===================================================== */
+
+function toggleDescription(id, button) {
+
+    const desc =
+        document.getElementById(id);
+
+    const expanded =
+        desc.classList.toggle('expanded');
+
+    if (expanded) {
+
+        button.textContent =
+            'Свернуть ↑';
+
+    } else {
+
+        button.textContent =
+            'Развернуть ↓';
+
+        desc.scrollTop = 0;
+
+    }
+}
+
+
+/* =====================================================
+   ФОТО
+   ===================================================== */
+
+const photoViewer =
+    document.getElementById('photo-viewer');
+
+const photoViewerImg =
+    document.getElementById('photo-viewer-img');
+
+
+function openPhoto(src) {
+
+    photoViewerImg.src = src;
+
+    photoViewer.classList.add('active');
+}
+
+
+function closePhoto(event) {
+
+    if (
+        event &&
+        event.target === photoViewerImg
+    ) {
+        return;
+    }
+
+    photoViewer.classList.remove('active');
+
+    photoViewerImg.src = '';
+}
+
+
+document
+    .querySelectorAll('.gallery img')
+    .forEach(function(img) {
+
+        img.addEventListener(
+            'click',
+            function() {
+
+                openPhoto(this.src);
+
+            }
+        );
+
+    });
+
+
+document.addEventListener(
+    'keydown',
+    function(e) {
+
+        if (e.key === 'Escape') {
+
+            closePhoto();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   МОДАЛКА
+   ===================================================== */
+
+const modal =
+    document.getElementById('contact-modal');
+
+
+function openModal() {
+
+    modal.classList.add('active');
+}
+
+
+function closeModal() {
+
+    modal.classList.remove('active');
+}
+
+
+modal.addEventListener(
+    'click',
+    function(e) {
+
+        if (e.target === modal) {
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   АНИМИРОВАННЫЙ TRAVEL-ФОН
+   ===================================================== */
+
+const canvas =
+    document.getElementById('background');
+
+const ctx =
+    canvas.getContext('2d');
+
+
+let width = 0;
+let height = 0;
+let dpr = 1;
+let time = 0;
+
+
+/*
+    Небольшие частицы.
+    Они создают ощущение воздуха/пыли,
+    но не превращают фон в "звёздное небо".
+*/
+
+const particles = [];
+
+function createParticles() {
+
+    particles.length = 0;
+
+    const count =
+        Math.min(
+            65,
+            Math.floor(
+                (window.innerWidth *
+                 window.innerHeight) / 16000
+            )
+        );
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        particles.push({
+
+            x: Math.random(),
+
+            y: Math.random(),
+
+            size:
+                Math.random() * 1.4 + .25,
+
+            speed:
+                Math.random() * .12 + .025,
+
+            opacity:
+                Math.random() * .25 + .04,
+
+            phase:
+                Math.random() *
+                Math.PI *
+                2
+
+        });
+
+    }
+}
+
+
+/* =====================================================
+   МЯГКИЕ СВЕТОВЫЕ ОБЛАКА
+   ===================================================== */
+
+const lights = [
+
+    {
+        x: .15,
+        y: .18,
+        radius: .55,
+        color: [30,190,215],
+        phase: 0
+    },
+
+    {
+        x: .82,
+        y: .18,
+        radius: .52,
+        color: [70,105,210],
+        phase: 2
+    },
+
+    {
+        x: .72,
+        y: .78,
+        radius: .60,
+        color: [20,145,180],
+        phase: 4
+    },
+
+    {
+        x: .20,
+        y: .82,
+        radius: .48,
+        color: [25,105,155],
+        phase: 1
+    }
+
+];
+
+
+function resizeBackground() {
+
+    dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+    width =
+        window.innerWidth;
+
+    height =
+        window.innerHeight;
+
+    canvas.width =
+        width * dpr;
+
+    canvas.height =
+        height * dpr;
+
+    canvas.style.width =
+        width + 'px';
+
+    canvas.style.height =
+        height + 'px';
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+    createParticles();
+}
+
+
+/* =====================================================
+   СВЕЧЕНИЕ
+   ===================================================== */
+
+function drawLights() {
+
+    ctx.globalCompositeOperation =
+        'screen';
+
+    lights.forEach(function(light) {
+
+        const x =
+            light.x * width +
+            Math.sin(
+                time * .32 +
+                light.phase
+            ) *
+            width *
+            .08;
+
+        const y =
+            light.y * height +
+            Math.cos(
+                time * .25 +
+                light.phase
+            ) *
+            height *
+            .07;
+
+        const radius =
+            Math.max(width,height) *
+            light.radius;
+
+        const c =
+            light.color;
+
+        const gradient =
+            ctx.createRadialGradient(
+                x,
+                y,
+                0,
+                x,
+                y,
+                radius
+            );
+
+        gradient.addColorStop(
+            0,
+            `rgba(
+                ${c[0]},
+                ${c[1]},
+                ${c[2]},
+                .13
+            )`
+        );
+
+        gradient.addColorStop(
+            .35,
+            `rgba(
+                ${c[0]},
+                ${c[1]},
+                ${c[2]},
+                .045
+            )`
+        );
+
+        gradient.addColorStop(
+            1,
+            `rgba(
+                ${c[0]},
+                ${c[1]},
+                ${c[2]},
+                0
+            )`
+        );
+
+        ctx.fillStyle =
+            gradient;
+
+        ctx.fillRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+    });
+}
+
+
+/* =====================================================
+   МЯГКИЕ ВОЛНЫ СВЕТА
+   ===================================================== */
+
+function drawLightWaves() {
+
+    ctx.globalCompositeOperation =
+        'screen';
+
+    for (
+        let band = 0;
+        band < 3;
+        band++
+    ) {
+
+        ctx.beginPath();
+
+        const baseY =
+            height *
+            (.28 + band * .24);
+
+        for (
+            let x = -80;
+            x <= width + 80;
+            x += 10
+        ) {
+
+            const normalized =
+                x / width;
+
+            const y =
+                baseY +
+
+                Math.sin(
+                    normalized * 5.5 +
+                    time * .35 +
+                    band
+                ) *
+                height *
+                .035 +
+
+                Math.sin(
+                    normalized * 11 -
+                    time * .22
+                ) *
+                height *
+                .014;
+
+            if (x === -80) {
+
+                ctx.moveTo(
+                    x,
+                    y
+                );
+
+            } else {
+
+                ctx.lineTo(
+                    x,
+                    y
+                );
+
+            }
+        }
+
+        ctx.lineTo(
+            width + 80,
+            height + 50
+        );
+
+        ctx.lineTo(
+            -80,
+            height + 50
+        );
+
+        ctx.closePath();
+
+        const gradient =
+            ctx.createLinearGradient(
+                0,
+                baseY - 100,
+                width,
+                baseY + 100
+            );
+
+        gradient.addColorStop(
+            0,
+            'rgba(50,210,230,0)'
+        );
+
+        gradient.addColorStop(
+            .35,
+            'rgba(50,210,230,.018)'
+        );
+
+        gradient.addColorStop(
+            .55,
+            'rgba(90,140,220,.025)'
+        );
+
+        gradient.addColorStop(
+            .75,
+            'rgba(50,190,215,.014)'
+        );
+
+        gradient.addColorStop(
+            1,
+            'rgba(50,210,230,0)'
+        );
+
+        ctx.fillStyle =
+            gradient;
+
+        ctx.fill();
+
+    }
+}
+
+
+/* =====================================================
+   ЧАСТИЦЫ
+   ===================================================== */
+
+function drawParticles() {
+
+    ctx.globalCompositeOperation =
+        'screen';
+
+    particles.forEach(function(p, index) {
+
+        const x =
+            (
+                p.x +
+                Math.sin(
+                    time * p.speed +
+                    p.phase
+                ) *
+                .012
+            ) % 1;
+
+        const y =
+            (
+                p.y -
+                time *
+                p.speed *
+                .004
+            ) % 1;
+
+        const finalY =
+            y < 0
+                ? y + 1
+                : y;
+
+        const pulse =
+            (
+                Math.sin(
+                    time * 1.4 +
+                    index
+                ) + 1
+            ) * .5;
+
+        ctx.fillStyle =
+            `rgba(
+                190,
+                235,
+                240,
+                ${p.opacity * (.55 + pulse)}
+            )`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x * width,
+            finalY * height,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+    });
+}
+
+
+/* =====================================================
+   ЛЁГКИЙ ГОРИЗОНТ
+   ===================================================== */
+
+function drawHorizon() {
+
+    ctx.globalCompositeOperation =
+        'screen';
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            height * .58,
+            0,
+            height
+        );
+
+    gradient.addColorStop(
+        0,
+        'rgba(35,145,165,0)'
+    );
+
+    gradient.addColorStop(
+        .65,
+        'rgba(20,105,125,.025)'
+    );
+
+    gradient.addColorStop(
+        1,
+        'rgba(10,70,90,.09)'
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        height * .5,
+        width,
+        height * .5
+    );
+}
+
+
+/* =====================================================
+   ОСНОВНАЯ АНИМАЦИЯ
+   ===================================================== */
+
+function drawBackground() {
+
+    time += .006;
+
+    ctx.globalCompositeOperation =
+        'source-over';
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /*
+        Базовый глубокий фон.
+    */
+
+    const base =
+        ctx.createLinearGradient(
+            0,
+            0,
+            width,
+            height
+        );
+
+    base.addColorStop(
+        0,
+        '#02070b'
+    );
+
+    base.addColorStop(
+        .45,
+        '#061119'
+    );
+
+    base.addColorStop(
+        1,
+        '#010509'
+    );
+
+    ctx.fillStyle =
+        base;
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    drawLights();
+
+    drawLightWaves();
+
+    drawHorizon();
+
+    drawParticles();
+
+
+    /*
+        Виньетка.
+    */
+
+    ctx.globalCompositeOperation =
+        'source-over';
+
+    const vignette =
+        ctx.createRadialGradient(
+            width / 2,
+            height / 2,
+            Math.min(width,height) * .18,
+
+            width / 2,
+            height / 2,
+            Math.max(width,height) * .78
+        );
+
+    vignette.addColorStop(
+        0,
+        'rgba(0,0,0,0)'
+    );
+
+    vignette.addColorStop(
+        .62,
+        'rgba(0,0,0,.05)'
+    );
+
+    vignette.addColorStop(
+        1,
+        'rgba(0,0,0,.58)'
+    );
+
+    ctx.fillStyle =
+        vignette;
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    requestAnimationFrame(
+        drawBackground
+    );
+}
+
+
+window.addEventListener(
+    'resize',
+    resizeBackground
+);
+
+
+resizeBackground();
+
+drawBackground();
+
+</script>
+
+</body>
+</html>
